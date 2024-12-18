@@ -1,0 +1,60 @@
+---
+title: "tpnoté_awa"
+output:
+  pdf_document: default
+  html_document: default
+date: "2024-12-18"
+---
+
+```{r}
+# Charger les bibliothèques nécessaires
+library(dplyr)
+library(readr)
+library(ggplot2)
+```
+
+
+
+
+```{r}
+
+
+
+# Définir une fonction pour lire et fusionner les fichiers CSV
+lire_donnees_ventes <- function(repertoire, date_debut, date_fin) {
+  # Lister les fichiers CSV dans le répertoire
+  liste_fichiers <- list.files(path = repertoire, pattern = "\\.csv$", full.names = TRUE)
+  
+  # Lire et combiner les fichiers
+  donnees_ventes <- liste_fichiers %>%
+    lapply(read_csv) %>%
+    bind_rows() %>% 
+    filter(date >= as.Date(date_debut) & date <= as.Date(date_fin))
+  
+  return(donnees_ventes)
+}
+
+# Utiliser la fonction pour lire les fichiers
+chemin_repertoire <- "C:/Users/dieye/Downloads/awasylla"
+date_debut <- "2020-01-01"
+date_fin <- "2024-12-31"
+
+donnees_ventes <- lire_donnees_ventes(chemin_repertoire, date_debut, date_fin)
+
+donnees_ventes
+```
+
+
+```{r}
+ggplot(donnees_ventes, aes(x = date, y = nb_de_ventes)) +
+  geom_line(color = "purple") +
+  labs(
+    title = "Évolution des ventes au fil des années",
+    x = "Date",
+    y = "Nombre de ventes",
+    
+  ) +
+  theme_minimal()
+```
+
+
